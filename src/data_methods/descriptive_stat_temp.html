@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h2>Отчет по описательной статистике</h2>
+     {{ descriptive_stat_table }}
+    <div>
+        <br/><br/>
+        <h2>Гистограмма и график плотности распределения</h2>
+    <img src="{{assets_dir}}/histogram-{{unique_filename}}.jpg" alt="Tyt kartinka">
+        <br/><br/>
+        <h2>QQ-plot</h2>
+    <img src="{{assets_dir}}/qq-plot-{{unique_filename}}.jpg" alt="Tyt kartinka">
+        <br/><br/>
+        <h2>Box-plot</h2>
+    <img src="{{assets_dir}}/box-plot-{{unique_filename}}.jpg" alt="Tyt kartinka">
+
+        <br/><br/>
+        <h2>Выводы</h2>
+        <ul>
+            {% for string in summary %}
+            <li>{{string}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
