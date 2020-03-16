@@ -6,7 +6,7 @@ import uuid
 import os
 
 
-def generate_pdf(data, summary, unique_filename):
+def generate_pdf(data, summary, unique_filename, distr_summary):
     ROOT = '/Users/anastasia/Desktop/math_stat_methods/src'
     ASSETS_DIR = os.path.join(ROOT, 'assets')
 
@@ -17,7 +17,8 @@ def generate_pdf(data, summary, unique_filename):
                      "descriptive_stat_table": data.to_html(),
                      "assets_dir": 'file://' + ASSETS_DIR,
                      "unique_filename": unique_filename,
-                     "summary": summary}
+                     "summary": summary,
+                     "distr_summary": distr_summary}
 
     html_out = template.render(template_vars)
 

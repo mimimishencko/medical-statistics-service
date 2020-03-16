@@ -16,7 +16,7 @@ class DescriptiveStatistics:
         if fields is None:
             fields = ['Выборочное среднее', 'Выборочная дисперсия', 'Стандартное отклонение', 'Мода', 'Медиана',
                       'Эксцесс', 'Асимметрия', 'Размах', 'Минимальное значение', 'Максимальное значение', 'Сумма',
-                      'Объем выборки', 'Процентиль', 'Дециль', 'Квартиль 25', 'Квартиль 75']
+                      'Объем выборки', 'Процентиль', 'Дециль', 'Квартиль 25', 'Квартиль 75', 'Интерквартильный размах']
         self.fields = fields
         self.data = data
 
@@ -36,7 +36,8 @@ class DescriptiveStatistics:
             "Процентиль": self.percentile(percent=99),
             "Дециль": self.percentile(percent=10),
             "Квартиль 25": self.percentile(percent=25),
-            "Квартиль 75": self.percentile(percent=75)
+            "Квартиль 75": self.percentile(percent=75),
+            "Интерквартильный размах": self.IQS(),
         }
 
     def sample_average(self):
@@ -87,6 +88,9 @@ class DescriptiveStatistics:
 
     def percentile(self, percent):
         return stats.scoreatpercentile(self.data, percent)
+
+    def IQS(self):
+        return self.percentile(75)-self.percentile(25);
 
     def descriptive_statistics(self):
         statistics = []

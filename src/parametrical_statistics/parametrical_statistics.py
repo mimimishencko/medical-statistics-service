@@ -2,12 +2,10 @@ from scipy import stats
 import numpy as np
 from math import sqrt
 from scipy import stats
-
-# from src.utils.interpretation_of_tests import interpretation_of_test
-from src.utils.interpretation_of_tests import interpretation_of_test
+from src.utils.interpretation_of_test import interpretation_of_test
 
 
-class ParametricStatistics:
+class ParametricMethods:
 
     def __init__(self, first_sample, second_sample, alpha, is_independent):
         self.first_sample = first_sample
@@ -30,26 +28,30 @@ class ParametricStatistics:
         return stats.ttest_ind(self.first_sample, self.second_sample, equal_var=False)
 
     def student_ind(self):
-        stats.ttest_ind(self.first_sample, self.second_sample)
+        return stats.ttest_ind(self.first_sample, self.second_sample)
 
     def student_rel(self):
-        stats.ttest_rel(self.first_sample, self.second_sample)
+        return stats.ttest_rel(self.first_sample, self.second_sample)
 
     def test(self):
-        res=''
+        global p_value
+        res = ''
         if np.std(self.first_sample, ddof=1) != np.std(self.second_sample, ddof=1):
-            stat, p_value = self.welch_test()
-            if interpretation_of_test(p_value, self.alpha):
-                res = f'На уровне значимости {self.alpha},' \
-                      f' нет оснований отвергать гипотезу о том, что средние значения отличаются'
+            if self.is_independent:
+                stat, p_value = self.welch_test()
             else:
-                res = f'На уровне значимости {self.alpha}, гипотеза о равенстве средних отвергается'
+                res = 'Невозможно провести тест, так как выборки зависимы и десперсии не равны'
+        else:
+            if self.is_independent:
+                stat, p_value = self.student_ind()
+            else:
+                stat, p_value = self.student_rel()
+        if interpretation_of_test(p_value, self.alpha):
+            res = f'На уровне значимости {self.alpha},' \
+                  f' нет оснований отвергать гипотезу о том, что средние значения отличаются'
+        else:
+            res = f'На уровне значимости {self.alpha}, гипотеза о равенстве средних отвергается'
 
-                #         how to validate if samples are independent
+            #         how to validate if samples are independent
 
         print(res)
-
-
-
-
-
