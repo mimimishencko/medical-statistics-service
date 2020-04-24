@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from src.data_methods.data_methods import *
 from src.descriptive_statistics.descriptive_statistics import DescriptiveStatistics, GraphicStatistics
-from src.data_methods.generate_pdf import generate_pdf
+from src.data_methods.generate_pdf import ReportGen
 from src.normal_dist_test.normal_dist_test import NormalDistTests
 from src.parametrical_statistics.parametrical_statistics import ParametricMethods
 from src.nonparametric_methods.nonparametric_methods import NonParametricMethods
@@ -52,9 +52,17 @@ PROJECT_ROOT = os.path.normpath(os.path.join(BASE_DIR, '../'))
 # generate_pdf(stat1.descriptive_statistics(), stat1.summary(), unique_filename1, distr_summary)
 # generate_pdf(stat2.descriptive_statistics(), stat2.summary(), unique_filename2)
 
-data1 = np.array([93.2, 98.2, 105.6, 86.8, 95.5])
-data2 = np.array([88.9, 94.5, 106.1, 84.3, 92.5])
+# data1 = np.array([93.2, 98.2, 105.6, 86.8, 95.5])
+# data2 = np.array([88.9, 94.5, 106.1, 84.3, 92.5])
 
-non_parametric = NonParametricMethods(data1, data2)
-print(non_parametric.wilcoxon())
+d1 = np.array([22.2, 17.0, 14.1, 17.0])
+d2 = np.array([5.4, 6.3, 8.5, 10.7])
+d3 = np.array([10.6, 6.2, 9.3, 12.3])
 
+non_parametric = NonParametricMethods()
+non_parametric.friedman(d1, d2, d3)
+# W_obs, df, n, critical, alpha = non_parametric.wilcoxon()
+
+# report_generator = ReportGen()
+# template, template_vars, name = report_generator.for_wilcoxon(df, n, W_obs, critical, alpha)
+# report_generator.generate_pdf(template, template_vars, name)
