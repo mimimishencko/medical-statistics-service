@@ -1,6 +1,6 @@
 from scipy import stats
 from src.utils.conjugation_table import conjugation_table
-from src.critical_tables.wilcoxon_table import get_value
+from src.critical_tables import *
 import pandas as pd
 import numpy as np
 
@@ -14,6 +14,7 @@ class NonParametricMethods:
         self.first_sample = first_sample
         self.second_sample = second_sample
         self.conj_table = conjugation_table(first_sample, second_sample)
+        self.chi2_critical = chi_square_table.ChiCriticalTable()
 
     def wilcoxon(self):
         df = pd.DataFrame({'before': self.first_sample, 'after': self.second_sample,
@@ -34,7 +35,7 @@ class NonParametricMethods:
         W_obs = df['ranges'].sum()
 
         n = np.size(self.first_sample)
-        critical, alpha = get_value(n)
+        critical, alpha = wilcoxon_table.get_value(n)
         return W_obs, df, n, critical, alpha
 
     def mann_whitney(self):
@@ -57,22 +58,25 @@ class NonParametricMethods:
         sorted_array = np.zeros((n, k))
         for row in df.iterrows():
             sorted_array[index] = np.sort(df.loc[index])
-            index+=1
+            index += 1
 
         for i in range(n):
             for j in range(k):
-                row, col =np.where(sorted_array == df.loc[i][j])
-                ranges[i][j] = col[0]+1
+                row, col = np.where(sorted_array == df.loc[i][j])
+                ranges[i][j] = col[0] + 1
         df_ranges = pd.DataFrame(ranges)
         sum_col = np.zeros(k, dtype=int)
         i = 0
         for col in df_ranges:
             sum_col[i] = df_ranges[col].sum()
-            i+=1
+            i += 1
 
-        chi = 12/(n*k*(k+1))*np.sum((sum_col-n*(k+1)/2)**2)
-        print(chi)
-        print(sum_col)
-        print(df_ranges)
-        print(sorted_array)
-        print(df)
+        chi = 12 / (n * k * (k + 1)) * np.sum((sum_col - n * (k + 1) / 2) ** 2)
+        if (k == 3 and n <= 15) or (k == 4 and n <= 8):
+            critical, p = fridman_table.get_value(n, k)
+
+        else:
+            p = 0.001
+            degree_of_freedom = k - 1
+            critical = self.chi2_critical.get_value(p, degree_of_freedom)
+        return chi, critical, p, df, df_ranges, n, k
