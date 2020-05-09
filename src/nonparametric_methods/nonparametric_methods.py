@@ -1,5 +1,6 @@
 from scipy import stats
 from src.utils.conjugation_table import conjugation_table
+from src.data_methods.generate_pdf import ReportGen
 from src.critical_tables import *
 import pandas as pd
 import numpy as np
@@ -15,6 +16,8 @@ class NonParametricMethods:
         self.second_sample = second_sample
         self.conj_table = conjugation_table(first_sample, second_sample)
         self.chi2_critical = chi_square_table.ChiCriticalTable()
+        self.report_generator = ReportGen()
+
 
     def wilcoxon(self):
         df = pd.DataFrame({'before': self.first_sample, 'after': self.second_sample,
@@ -45,26 +48,30 @@ class NonParametricMethods:
         return stats.chi2_contingency(self.conj_table.to_numpy())
 
     def friedman(self, *args):
-        df = pd.DataFrame()
+        alpha = args[-1]
+        args = args[0:-1]
         k = len(args)
         n = np.size(args[0])
-        index = 0
+        df = pd.DataFrame(index=range(1, n+1), columns=range(1, len(args)+1))
+        index = 1
         for arg in args:
-            df.insert(loc=index, column=index, value=arg)
+            df[index] = arg
             index += 1
+
         index = 0
         ranges = np.zeros((n, k))
 
         sorted_array = np.zeros((n, k))
         for row in df.iterrows():
-            sorted_array[index] = np.sort(df.loc[index])
+            sorted_array[index] = np.sort(df.loc[index+1])
             index += 1
 
         for i in range(n):
             for j in range(k):
-                row, col = np.where(sorted_array == df.loc[i][j])
+                row, col = np.where(sorted_array == df.loc[i+1][j+1])
                 ranges[i][j] = col[0] + 1
-        df_ranges = pd.DataFrame(ranges)
+        df_ranges = pd.DataFrame(ranges, index=range(1, n+1), columns=range(1, len(args)+1))
+        print(df_ranges)
         sum_col = np.zeros(k, dtype=int)
         i = 0
         for col in df_ranges:
@@ -73,10 +80,13 @@ class NonParametricMethods:
 
         chi = 12 / (n * k * (k + 1)) * np.sum((sum_col - n * (k + 1) / 2) ** 2)
         if (k == 3 and n <= 15) or (k == 4 and n <= 8):
-            critical, p = fridman_table.get_value(n, k)
+            critical1, p1 = fridman_table.get_value(n, k)
+            p_value = p1
 
         else:
-            p = 0.001
+            p1 = alpha
             degree_of_freedom = k - 1
-            critical = self.chi2_critical.get_value(p, degree_of_freedom)
-        return chi, critical, p, df, df_ranges, n, k
+            critical1 = self.chi2_critical.get_value(p1, degree_of_freedom)
+            stat, p_value = stats.friedmanchisquare(*(args[i] for i in range(len(args))))
+        self.report_generator.for_friedman(chi, critical1, p1,  df, df_ranges, n, k, format(p_value, '.4f'), alpha)
+

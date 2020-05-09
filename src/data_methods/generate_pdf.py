@@ -36,7 +36,7 @@ class ReportGen:
                          }
         self.generate_pdf(template, template_vars, 'Wilcoxon')
 
-    def for_friedman(self, chi, critical, p, df, df_ranges, n, k):
+    def for_friedman(self, chi, critical, p, df, df_ranges, n, k, p_value, alpha):
         template = self.env.get_template("friedman_report.html")
         template_vars = {"title": "Friedman test",
                          "rang_table": df_ranges.to_html(),
@@ -46,7 +46,13 @@ class ReportGen:
                          "Chi": chi,
                          "critical": critical,
                          "p": p,
-                         "chi2_img": f"file://{self.ROOT}/data_methods/img/chi2_r.png"
+                         "chi2_img": f"file://{self.ROOT}/data_methods/img/chi2_r.png",
+                         "friedman_stat": f"file://{self.ROOT}/data_methods/img/friedman_stat.png",
+                         "n_img": f"file://{self.ROOT}/data_methods/img/n.png",
+                         "k_img": f"file://{self.ROOT}/data_methods/img/k.png",
+                         "R_m": f"file://{self.ROOT}/data_methods/img/R_m.png",
+                         "p_value": p_value,
+                         "alpha": alpha,
                          }
         print(template_vars["chi2_img"])
         self.generate_pdf(template, template_vars, 'Friedman')
