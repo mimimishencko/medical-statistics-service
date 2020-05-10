@@ -10,8 +10,9 @@ def read_data(result_path='DATA_PATH'):
         path = os.getenv('DATA_PATH')
     else:
         path = result_path
-    df = pd.read_csv(path, header=None)
-    return df.to_numpy().transpose()[0]
+    df = pd.read_excel(path, header=None)
+
+    return df
 
 
 def write_data(df, result_path='RESULT_PATH'):

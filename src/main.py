@@ -17,7 +17,10 @@ PROJECT_ROOT = os.path.normpath(os.path.join(BASE_DIR, '../'))
 
 
 # data1 = read_data()
-# data2 = read_data('../test_data/test_data_2.csv')
+data = read_data('../test_data/diabet_data.xlsx')
+parametric_tests = ParametricMethods()
+parametric_tests.test(data, True, 0.05, -1)
+
 #
 # unique_filename1 = str(uuid.uuid4())
 # unique_filename2 = str(uuid.uuid4())
@@ -49,6 +52,8 @@ PROJECT_ROOT = os.path.normpath(os.path.join(BASE_DIR, '../'))
 # data1 = np.array([93.2, 98.2, 105.6, 86.8, 95.5])
 # data2 = np.array([88.9, 94.5, 106.1, 84.3, 92.5])
 
+
+#For Friedman
 # d1 = np.array([193, 206, 188, 375, 204, 287, 221, 216, 195, 231])
 # d2 = np.array([217, 214, 197, 412, 199, 310, 215, 223, 208, 224])
 # d3 = np.array([191, 293, 181, 400, 211, 304, 213, 207, 186, 227])
@@ -57,19 +62,11 @@ PROJECT_ROOT = os.path.normpath(os.path.join(BASE_DIR, '../'))
 # d6 = np.array([127, 130, 128, 230, 132, 198, 135, 124, 129, 125])
 # stat1 = DescriptiveStatistics(data=d1)
 
-d1=np.array([22.2, 17., 14.1, 17])
-d2=np.array([5.4, 6.3, 8.5, 10.7])
-d3=np.array([10.6, 6.2, 9.3, 12.3])
-non_parametric = NonParametricMethods()
-non_parametric.friedman(d1, d2, d3, 0.05)
-# W_obs, df, n, critical, alpha = non_parametric.wilcoxon()
+# For Friedman
+# d1=np.array([22.2, 17., 14.1, 17])
+# d2=np.array([5.4, 6.3, 8.5, 10.7])
+# d3=np.array([10.6, 6.2, 9.3, 12.3])
+# non_parametric = NonParametricMethods()
+# non_parametric.friedman(d1, d2, d3, 0.05)
 
 
-# normal_test1 = NormalDistTests(data=d1, alpha=0.05)
-# distr_summary = normal_test1.summary()
-# graphic1 = GraphicStatistics(d1, unique_filename1)
-# graphic1.histogram()
-# graphic1.qq_plot()
-# graphic1.box_plot()
-#
-# report_generator.for_descriptive(stat1.descriptive_statistics(), stat1.summary(), unique_filename1, distr_summary)

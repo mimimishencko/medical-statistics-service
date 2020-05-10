@@ -54,8 +54,23 @@ class ReportGen:
                          "p_value": p_value,
                          "alpha": alpha,
                          }
-        print(template_vars["chi2_img"])
         self.generate_pdf(template, template_vars, 'Friedman')
+
+    def for_student(self, stat, critical, df, n, k, p_value, alpha, test, is_independent, expected):
+        template = self.env.get_template("student_report.html")
+        template_vars = {"title": "Friedman test",
+                         "default_table": df.to_html(),
+                         "n": n,
+                         "k": k,
+                         "test": test,
+                         "is_independent": is_independent,
+                         "critical": critical,
+                         "stat": stat,
+                         "p_value": p_value,
+                         "alpha": alpha,
+                         "expected": expected,
+                         }
+        self.generate_pdf(template, template_vars, 'Student')
 
     def generate_pdf(self, template, template_vars, name):
 
