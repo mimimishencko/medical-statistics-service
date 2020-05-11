@@ -19,7 +19,9 @@ PROJECT_ROOT = os.path.normpath(os.path.join(BASE_DIR, '../'))
 # data1 = read_data()
 data = read_data('../test_data/diabet_data.xlsx')
 parametric_tests = ParametricMethods()
-parametric_tests.test(data, True, 0.05, -1)
+descriptive = DescriptiveStatistics(data[0].to_numpy().transpose())
+# parametric_tests.test(data, True, 0.05, 0)
+descriptive.summary(0.05)
 
 #
 # unique_filename1 = str(uuid.uuid4())

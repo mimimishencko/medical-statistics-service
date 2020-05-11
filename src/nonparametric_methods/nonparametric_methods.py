@@ -1,7 +1,9 @@
 from scipy import stats
+
+from critical_tables import fridman_table, wilcoxon_table
 from src.utils.conjugation_table import conjugation_table
 from src.data_methods.generate_pdf import ReportGen
-from src.critical_tables import *
+from src.critical_tables import chi_square_table
 import pandas as pd
 import numpy as np
 
@@ -15,7 +17,6 @@ class NonParametricMethods:
         self.first_sample = first_sample
         self.second_sample = second_sample
         self.conj_table = conjugation_table(first_sample, second_sample)
-        self.chi2_critical = chi_square_table.ChiCriticalTable()
         self.report_generator = ReportGen()
 
 
@@ -86,7 +87,7 @@ class NonParametricMethods:
         else:
             p1 = alpha
             degree_of_freedom = k - 1
-            critical1 = self.chi2_critical.get_value(p1, degree_of_freedom)
+            critical1 = chi_square_table.get_value(p1, degree_of_freedom)
             stat, p_value = stats.friedmanchisquare(*(args[i] for i in range(len(args))))
         self.report_generator.for_friedman(chi, critical1, p1,  df, df_ranges, n, k, format(p_value, '.4f'), alpha)
 

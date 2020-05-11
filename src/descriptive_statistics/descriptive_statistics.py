@@ -8,21 +8,30 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from src.assets.summary_dict import *
 import pylab
+import uuid
+from src.data_methods.generate_pdf import ReportGen
+from src.normal_dist_test.normal_dist_test import NormalDistTests
+from src.critical_tables import student_table, chi_square_table
 
 
 class DescriptiveStatistics:
 
-    def __init__(self, data, fields=None):
+    def __init__(self, data,  fields=None):
         if fields is None:
             fields = ['Выборочное среднее', 'Выборочная дисперсия', 'Стандартное отклонение', 'Мода', 'Медиана',
                       'Эксцесс', 'Асимметрия', 'Размах', 'Минимальное значение', 'Максимальное значение', 'Сумма',
                       'Объем выборки', 'Процентиль', 'Дециль', 'Квартиль 25', 'Квартиль 75', 'Интерквартильный размах']
         self.fields = fields
         self.data = data
+        self.statistics_df = pd.DataFrame()
+        self.unique_filename = str(uuid.uuid4())
+        self.graphic = GraphicStatistics(data, self.unique_filename)
+        self.report_gen = ReportGen()
+        self.normal_test = NormalDistTests()
 
         self.target_statistics = {
             "Выборочное среднее": self.sample_average(),
-            "Выборочная дисперсия": self.dispersion(),
+            "Выборочная дисперсия": self.variance(),
             "Стандартное отклонение": self.std(),
             "Мода": self.mode(),
             "Медиана": self.median(),
@@ -43,14 +52,14 @@ class DescriptiveStatistics:
     def sample_average(self):
         return np.mean(self.data)
 
-    def dispersion(self):
+    def variance(self):
         n = np.size(self.data)
         average = self.sample_average()
         f = lambda x: (x - average) ** 2
         return np.sum(f(self.data)) / (n - 1)
 
     def std(self):
-        return sqrt(self.dispersion())
+        return sqrt(self.variance())
 
     def sample_min(self):
         return np.min(self.data)
@@ -77,7 +86,7 @@ class DescriptiveStatistics:
         else:
             mostCommon = counter.most_common()
             maxCount = mostCommon[0][1]
-            modes = [t[0] for t in takewhile(lambda x: x[1] == maxCount, mostCommon)]
+            modes = [format(t[0], '.4f') for t in takewhile(lambda x: x[1] == maxCount, mostCommon)]
         return modes
 
     def excess(self):
@@ -90,16 +99,34 @@ class DescriptiveStatistics:
         return stats.scoreatpercentile(self.data, percent)
 
     def IQS(self):
-        return self.percentile(75)-self.percentile(25);
+        return self.percentile(75)-self.percentile(25)
 
     def descriptive_statistics(self):
         statistics = []
         for key in self.fields:
             statistics.append(self.target_statistics[key])
         self.statistics_df = pd.DataFrame(statistics, self.fields, columns=[' '])
-        return self.statistics_df
 
-    def summary(self):
+    def confidence_for_mean(self, alpha):
+        left = self.sample_average()-student_table.get_value(1-alpha/2, np.size(self.data)-1)*self.std()/np.size(self.data)
+        right = self.sample_average()+student_table.get_value(1-alpha/2, np.size(self.data)-1)*self.std()/np.size(self.data)
+        print(student_table.get_value(1-alpha/2, np.size(self.data)-1))
+        # return [format(left, '.4f'), format(right, '.4f')]
+        return [left, right]
+
+    def confidence_for_variance(self, alpha):
+        n = np.size(self.data)
+        left = ((n-1)/self.variance())/chi_square_table.get_value((1+alpha)/2, n-1)
+        right = ((n-1)/self.variance())/chi_square_table.get_value((1-alpha)/2, n-1)
+        # return [format(left, '.4f'), format(right, '.4f')]
+        return [left, right]
+
+
+    def summary(self, alpha):
+        self.descriptive_statistics()
+        dist_res = self.normal_test.summary(self.data, alpha)
+        confidence_mean = self.confidence_for_mean(alpha)
+        confidence_variance = self.confidence_for_variance(alpha)
         result = []
         for index, row in self.statistics_df.iterrows():
             if index == 'Мода':
@@ -111,16 +138,16 @@ class DescriptiveStatistics:
                     result.append(summary_dict['mode_none'])
 
             if index == 'Процентиль':
-                result.append(summary_dict['percentile'] + str(row.values[0]) + '. ')
+                result.append(summary_dict['percentile'] + str(format(row.values[0], '.4f')) + '. ')
 
             if index == 'Дециль':
-                result.append(summary_dict['decile'] + str(row.values[0]) + '. ')
+                result.append(summary_dict['decile'] + str(format(row.values[0], '.4f')) + '. ')
 
             if index == 'Квартиль':
-                result.append(summary_dict['quartile'] + str(row.values[0]) + '. ')
+                result.append(summary_dict['quartile'] + str(format(row.values[0], '.4f')) + '. ')
 
             if index == 'Асимметрия':
-                str_to_append = summary_dict['assymetry'] + str(row.values[0]) + summary_dict['assymetry_conclusion']
+                str_to_append = summary_dict['assymetry'] + str(format(row.values[0], '.4f')) + summary_dict['assymetry_conclusion']
                 if row.values[0] > 0:
                     str_to_append += summary_dict['left_assymmetry']
                 elif row.values[0] < 0:
@@ -138,7 +165,11 @@ class DescriptiveStatistics:
                 else:
                     str_to_append += summary_dict['excess_null']
                 result.append(str_to_append)
-        return result
+
+        self.graphic.histogram()
+        self.graphic.qq_plot()
+        self.graphic.box_plot()
+        self.report_gen.for_descriptive(self.statistics_df, result, self.unique_filename, dist_res, confidence_mean, confidence_variance)
 
 
 class GraphicStatistics:

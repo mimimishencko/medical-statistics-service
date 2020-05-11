@@ -3,24 +3,37 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>{{ title }}</title>
+
 </head>
 <body>
     <h2>Отчет по описательной статистике</h2>
      {{ descriptive_stat_table }}
     <div>
-        <br/><br/>
+
         <h2>Гистограмма и график плотности распределения</h2>
     <img src="{{assets_dir}}/histogram-{{unique_filename}}.jpg" alt="Tyt kartinka">
-        <br/><br/>
+
         <h2>QQ-plot</h2>
     <img src="{{assets_dir}}/qq-plot-{{unique_filename}}.jpg" alt="Tyt kartinka">
-        <br/><br/>
+
         <h2>Box-plot</h2>
     <img src="{{assets_dir}}/box-plot-{{unique_filename}}.jpg" alt="Tyt kartinka">
-        <br/><br/>
-        <h2>Распределение</h2>
-        <p>{{distr_summary}}</p>
-        <br/><br/>
+
+<!--        <h2>Распределение</h2>-->
+<!--        <p>Проверка произведена с помощью критерия Шапиро-Уилка</p>-->
+<!--        <p>Статистика критерия: {{distr_summary[1]}}</p>-->
+<!--        <p>p-значение: {{distr_summary[2]}}</p>-->
+<!--        <p>{{distr_summary[0]}}</p>-->
+
+        <h2>Доверительные интервалы</h2>
+        <p>Доверительный интервал для математического ожидания: </p>
+        <img src="{{confidence_mean_formula}}">
+        <p>( {{confidence_mean[0]}} ; {{confidence_mean[1]}} )</p>
+
+        <p>Доверительный интервал для математического ожидания: </p>
+        <img src="{{confidence_variance_formula}}">
+        <p>( {{confidence_variance[0]}} ; {{confidence_variance[1]}} )</p>
+
         <h2>Выводы</h2>
         <ul>
             {% for string in summary %}

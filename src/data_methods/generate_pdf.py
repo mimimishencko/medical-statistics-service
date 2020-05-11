@@ -12,16 +12,19 @@ class ReportGen:
         self.ASSETS_DIR = os.path.join(self.ROOT, 'assets').strip()
         self.env = Environment(loader=FileSystemLoader('./data_methods'))
 
-    def for_descriptive(self, data, summary, unique_filename, distr_summary):
+    def for_descriptive(self, data, summary, unique_filename, distr_summary, confidence_mean, confidence_variance):
         template = self.env.get_template("descriptive_stat_temp.html")
 
         template_vars = {"title": "Descriptive Statistics",
-                         "descriptive_stat_table": data.to_html(),
+                         "descriptive_stat_table": data.to_html(float_format=lambda x: '%.4f' % x),
                          "assets_dir": 'file://' + self.ASSETS_DIR,
                          "unique_filename": unique_filename,
                          "summary": summary,
+                         "confidence_mean": confidence_mean,
+                         "confidence_mean_formula": f"file://{self.ROOT}/data_methods/img/ci_mean.png",
+                         "confidence_variance_formula": f"file://{self.ROOT}/data_methods/img/ci_variance.png",
+                         "confidence_variance": confidence_variance,
                          "distr_summary": distr_summary}
-        print('file://' + self.ASSETS_DIR+'/histogram-'+template_vars["unique_filename"]+'.jpg')
         self.generate_pdf(template, template_vars, 'descriptive')
 
     def for_wilcoxon(self, rang_table, n, w_obs, w_cr, alpha):
