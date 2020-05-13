@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from src.assets.summary_dict import *
 import pylab
 import uuid
-from src.data_methods.generate_pdf import ReportGen
+from src.report_generator.generate_pdf import ReportGen
 from src.normal_dist_test.normal_dist_test import NormalDistTests
 from src.critical_tables import student_table, chi_square_table
 
@@ -87,6 +87,8 @@ class DescriptiveStatistics:
             mostCommon = counter.most_common()
             maxCount = mostCommon[0][1]
             modes = [format(t[0], '.4f') for t in takewhile(lambda x: x[1] == maxCount, mostCommon)]
+        if len(modes) == np.size(self.data):
+            return '-'
         return modes
 
     def excess(self):
@@ -110,16 +112,13 @@ class DescriptiveStatistics:
     def confidence_for_mean(self, alpha):
         left = self.sample_average()-student_table.get_value(1-alpha/2, np.size(self.data)-1)*self.std()/np.size(self.data)
         right = self.sample_average()+student_table.get_value(1-alpha/2, np.size(self.data)-1)*self.std()/np.size(self.data)
-        print(student_table.get_value(1-alpha/2, np.size(self.data)-1))
-        # return [format(left, '.4f'), format(right, '.4f')]
-        return [left, right]
+        return [format(left, '.4f'), format(right, '.4f')]
 
     def confidence_for_variance(self, alpha):
         n = np.size(self.data)
-        left = ((n-1)/self.variance())/chi_square_table.get_value((1+alpha)/2, n-1)
-        right = ((n-1)/self.variance())/chi_square_table.get_value((1-alpha)/2, n-1)
-        # return [format(left, '.4f'), format(right, '.4f')]
-        return [left, right]
+        left = ((n-1)*self.variance())/chi_square_table.get_value((1+alpha)/2, n-1)
+        right = ((n-1)*self.variance())/chi_square_table.get_value((1-alpha)/2, n-1)
+        return [format(left, '.6f'), format(right, '.6f')]
 
 
     def summary(self, alpha):
@@ -130,7 +129,9 @@ class DescriptiveStatistics:
         result = []
         for index, row in self.statistics_df.iterrows():
             if index == 'Мода':
-                if len(row.values[0]) == 1:
+                if row.values[0] == '-':
+                    result.append('Все значения в выборке встречаются единожды, моды нет.')
+                if len(row.values[0]) == 1 and row.values[0] != '-':
                     result.append(summary_dict['mode_uni'])
                 if len(row.values[0]) > 1:
                     result.append(summary_dict['mode_muli'])

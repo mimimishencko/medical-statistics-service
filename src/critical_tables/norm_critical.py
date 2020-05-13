@@ -1,8 +1,6 @@
 from scipy.stats import norm
 
 
-def z_criterium(x):
+def get_value(x):
     return norm.cdf(x)
 
-
-print(z_criterium(1.40))

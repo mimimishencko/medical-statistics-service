@@ -19,18 +19,18 @@
         <h2>Box-plot</h2>
     <img src="{{assets_dir}}/box-plot-{{unique_filename}}.jpg" alt="Tyt kartinka">
 
-<!--        <h2>Распределение</h2>-->
-<!--        <p>Проверка произведена с помощью критерия Шапиро-Уилка</p>-->
-<!--        <p>Статистика критерия: {{distr_summary[1]}}</p>-->
-<!--        <p>p-значение: {{distr_summary[2]}}</p>-->
-<!--        <p>{{distr_summary[0]}}</p>-->
+        <h2>Распределение</h2>
+        <p>Проверка произведена с помощью критерия Шапиро-Уилка</p>
+        <p>Статистика критерия: {{distr_summary[1]}}</p>
+        <p>p-значение: {{distr_summary[2]}}</p>
+        <p>{{distr_summary[0]}}</p>
 
         <h2>Доверительные интервалы</h2>
-        <p>Доверительный интервал для математического ожидания: </p>
-        <img src="{{confidence_mean_formula}}">
+        <p>Доверительный интервал для математического ожидания генеральной совокупности: </p>
+        <img src="{{confidence_mean_formula}}">, где
         <p>( {{confidence_mean[0]}} ; {{confidence_mean[1]}} )</p>
 
-        <p>Доверительный интервал для математического ожидания: </p>
+        <p>Доверительный интервал для дисперсии генеральной совокупности: </p>
         <img src="{{confidence_variance_formula}}">
         <p>( {{confidence_variance[0]}} ; {{confidence_variance[1]}} )</p>
 

@@ -1,4 +1,5 @@
 import pandas as pd
+from statistics import variance
 import numpy as np
 from scipy import stats
 from src.utils.interpretation_of_test import interpretation_of_test
@@ -7,20 +8,23 @@ from src.utils.interpretation_of_test import interpretation_of_test
 class NormalDistTests:
 
     def ks_test(self, data):
-        # if p-value larger than 0.05 we assume normal dist
         return stats.kstest(data, 'norm')
-        # sort_data = np.sort(self.data)
-        # N = np.size(self.data)
-        # i = np.arange(1, N+1, 1)
-        # D_plus = max(i / N - sort_data)
-        # print('D_plus ', D_plus)
-        # D_minus = max(sort_data - (i - 1) / N)
-        # print('D_minus', D_minus)
-        # D = max(D_plus, D_minus)
-        # print(D)
+
 
     def shapiro(self, data):
         # if p-value lager than 0.05 assume normal
+        n=np.size(data)
+        m=n//2
+        print(m)
+        B=0
+        a0=0.899/((n-2.4)**0.4162)-0.02
+        for j in range(1, m):
+            z=(n-2*j+1)/(n-0.5)
+            a=a0*(z+1483/((3-z)**10.845)+(71.6*10**(-10))/((1.1-z)**8.26))
+            B+=a*(data[n-j]-data[j])
+        W=(1-0.6695/(n**0.6518))*np.var(data)/(B**2)
+        print(W)
+
         return stats.shapiro(data)
 
     def summary(self, data, alpha, test='shapiro'):
@@ -39,11 +43,11 @@ class NormalDistTests:
                 0] = f'На уровне значимости {alpha}, распределение близко к нормальному. В качестве меры центральной ' \
                      f'тенденции' \
                      f' стоит использовать среднее выборочное значение, а в качестве меры рассеяния' \
-                     f' - стантартное отклонение.'
+                     f' - стандартное отклонение.'
         else:
             res[0] = f'На уровне значимости {alpha}, распределение не является нормальным. Среднее выборочное значение ' \
-                     f'и стантартное отклонение' \
-                     f'не являются показательными характеристиками. В качестве цетральной тенденции стоит использовать ' \
+                     f'и стандартное отклонение' \
+                     f' не являются показательными характеристиками. В качестве цетральной тенденции стоит использовать ' \
                      f'медиану, а в качестве меры рассеяния ' \
                      f'интерквантильный размах.'
         print(res)

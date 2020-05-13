@@ -4,7 +4,7 @@ from math import sqrt
 from scipy import stats
 import pandas as pd
 from src.utils.interpretation_of_test import interpretation_of_test
-from src.data_methods.generate_pdf import ReportGen
+from src.report_generator.generate_pdf import ReportGen
 from src.critical_tables import student_table
 
 
@@ -25,7 +25,6 @@ class ParametricMethods:
         return stats.ttest_rel(first_sample, second_sample)
 
     def test(self, df, is_independent, alpha, expected):
-        # expected 0 - change, 1 - increased, -1 - decreased
         test = ['', '']
         critical = 0
         p_value = 0

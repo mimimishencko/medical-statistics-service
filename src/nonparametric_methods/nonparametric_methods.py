@@ -1,8 +1,8 @@
 from scipy import stats
-
-from critical_tables import fridman_table, wilcoxon_table
+from math import sqrt
+from critical_tables import fridman_table, wilcoxon_table, norm_critical
 from src.utils.conjugation_table import conjugation_table
-from src.data_methods.generate_pdf import ReportGen
+from src.report_generator.generate_pdf import ReportGen
 from src.critical_tables import chi_square_table
 import pandas as pd
 import numpy as np
@@ -42,8 +42,40 @@ class NonParametricMethods:
         critical, alpha = wilcoxon_table.get_value(n)
         return W_obs, df, n, critical, alpha
 
-    def mann_whitney(self):
-        return stats.mannwhitneyu(self.first_sample, self.second_sample)
+    def mann_whitney(self, data, alpha, expected):
+        first_sample = data[0].to_numpy().transpose()
+        second_sample = data[1].to_numpy().transpose()
+        accepted = False
+        n = np.size(first_sample)
+        m = np.size(second_sample)
+        side = ''
+        x=0
+        if expected < 0:
+            side = 'greater'
+            x=1-alpha
+        if expected > 0:
+            side = 'less'
+            x=alpha
+        if expected == 0:
+            side = 'two-sided'
+            x=1-alpha/2
+
+        stat, p_value = stats.mannwhitneyu(first_sample, second_sample, alternative=side)
+        critical = norm_critical.get_value(x)
+        stat = abs(stat - n*m/2)/sqrt(n*m*(m+n+1)/12)
+        print(stat, critical, x, side)
+        if expected < 0 and stat <= critical:
+            print('1')
+            accepted = True
+        if expected > 0 and stat >= critical:
+            print('2')
+            accepted = True
+        if expected == 0 and stat <= critical:
+            print('3')
+            accepted = True
+        self.report_generator.for_mann_whitney(format(stat, '.4f'), format(critical, '.4f'), n, m, format(p_value, '.6f'), alpha, expected, accepted)
+
+
 
     def chi2(self):
         return stats.chi2_contingency(self.conj_table.to_numpy())
