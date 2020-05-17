@@ -1,13 +1,7 @@
 from dotenv import load_dotenv
-from src.report_generator.data_methods import *
-from src.descriptive_statistics.descriptive_statistics import DescriptiveStatistics, GraphicStatistics
-from src.report_generator.generate_pdf import ReportGen
-from src.normal_dist_test.normal_dist_test import NormalDistTests
-from src.parametrical_statistics.parametrical_statistics import ParametricMethods
 from src.nonparametric_methods.nonparametric_methods import NonParametricMethods
 import os
 import numpy as np
-import uuid
 
 np.set_printoptions(suppress=True)
 load_dotenv()
