@@ -1,0 +1,228 @@
+
+@Black: #000000;
+@Grey70: #484848;
+@Grey40: #918c8e;
+@Grey10: #e5e5e5;
+@Background: #fafafa;
+// @Background: #f00;
+@White: #ffffff;
+@Primary: #4086cb;
+@Secondary: #ff994e;
+@InputError: #d0021b;
+
+@font: 'Roboto', sans-serif;
+
+@mobile: ~'only screen and (max-width: 767px)';
+
+input[type='text'],
+input[type='email'],
+input[type='number'],
+input[type='password'] {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid @Grey10;
+  border-radius: 4px;
+  background-color: @White;
+  font-size: 15px;
+  line-height: 16px;
+  padding: 15px 16px;
+  color: @Black;
+  font-family: @font;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid @Grey10;
+  border-radius: 4px;
+  background-color: @White;
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 15px 16px;
+  color: @Black;
+  outline: none;
+  &:focus {
+    color: @Primary;
+  }
+  &::placeholder {
+    color: @Grey40;
+  }
+}
+
+&.focus {
+  label {
+    color: @Black;
+  }
+}
+.error_text {
+  color: @InputError;
+  font-size: 11px;
+  line-height: 11px;
+  padding: 5px 7px;
+  display: none;
+}
+
+&.error {
+  label {
+    color: @Black;
+  }
+  input,
+  .chosen-single,
+  textarea {
+    border: 1px solid @InputError;
+  }
+  .error_text {
+    display: block;
+  }
+}
+.form_control {
+  margin-bottom: 16px;
+
+  label {
+    color: @Black;
+    font-size: 11px;
+    line-height: 11px;
+    padding: 5px 7px;
+    display: block;
+
+    position: absolute;
+    top: 0;
+  }
+
+  &.with_label {
+    position: relative;
+    padding-top: 20px;
+    margin-bottom: 5px;
+
+    label {
+      cursor: text;
+      top: 20px;
+      font-size: 15px;
+      line-height: 16px;
+      padding: 16px 16px;
+      color: @Grey40;
+      transition: all 0.2s ease 0s;
+      width: 100%;
+      text-align: left;
+      box-sizing: border-box;
+      white-space: nowrap;
+    }
+
+    &.focus label {
+      position: absolute;
+      top: 0px;
+      font-size: 11px;
+      line-height: 11px;
+      padding: 5px 7px;
+      color: @Grey40;
+    }
+
+    input:focus + label, input:-webkit-autofill + label {
+      position: absolute;
+      top: 0;
+      font-size: 11px;
+      line-height: 11px;
+      padding: 5px 7px;
+      color: @Black;
+    }
+
+    @-moz-document url-prefix() {
+      input:focus + label {
+        position: absolute;
+        top: 0px;
+        font-size: 11px;
+        line-height: 11px;
+        padding: 5px 7px;
+        color: @Black;
+      }
+    }
+
+    textarea:focus + label {
+      position: absolute;
+      top: 0px;
+      font-size: 11px;
+      line-height: 11px;
+      padding: 5px 7px;
+      color: @Black;
+    }
+
+    &.error label {
+      color: @Black;
+    }
+  }
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+a {
+  color: @Primary;
+  outline: none;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.main_title,
+h1.main_title {
+  font-size: 64px;
+  font-weight: bold;
+}
+
+h1,
+.h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h2,
+.h2 {
+  font-size: 24px;
+  font-weight: normal;
+  margin: 0px;
+}
+
+@media @mobile {
+  body {
+    font-size: 15px;
+  }
+
+}
+
+/**
+ * Buttons
+ */
+.btn {
+  text-align: center;
+  background: @Primary;
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 16px;
+  color: @White;
+  min-width: 176px;
+  padding: 19px 16px;
+  box-sizing: border-box;
+  font-family: @font;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  display: inline-block;
+  text-decoration: none !important;
+  position: relative;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  .secondary {
+    background: #ff994e;
+  }
+}

@@ -10,7 +10,7 @@ class ReportGen:
     def __init__(self):
         self.ROOT = str(pathlib.Path().absolute())
         self.ASSETS_DIR = os.path.join(self.ROOT, 'assets').strip()
-        self.env = Environment(loader=FileSystemLoader('./report_generator'))
+        self.env = Environment(loader=FileSystemLoader('./report_generator/templates/'))
 
     def for_descriptive(self, data, summary, unique_filename, distr_summary, confidence_mean, confidence_variance):
         template = self.env.get_template("descriptive_stat_temp.html")

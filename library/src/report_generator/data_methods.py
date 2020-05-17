@@ -5,7 +5,16 @@ import numpy as np
 from random import randint
 
 
-def read_data(result_path='DATA_PATH'):
+def read_data_excel(result_path='DATA_PATH'):
+    if result_path == 'DATA_PATH':
+        path = os.getenv('DATA_PATH')
+    else:
+        path = result_path
+    df = pd.read_excel(path, header=None)
+
+    return df
+
+def read_data_csv(result_path='DATA_PATH'):
     if result_path == 'DATA_PATH':
         path = os.getenv('DATA_PATH')
     else:
