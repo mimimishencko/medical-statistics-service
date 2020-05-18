@@ -1,1 +1,21 @@
-<p>interactive-helper works!</p>
+<div class="wrapper">
+  <div class="questions_wrapper" *ngIf="currentQuestion">
+    <div class="question_block">
+      <div class="questions_content">
+      <div class="question">
+      {{currentQuestion.question}}
+      </div>
+      <div class="answers">
+        <div *ngFor="let answer of currentQuestion.answers; let i = index">
+        <input type="radio" [id]="'answerChoice'+ i"
+               name="answerRadio" [value]="answer.answer" (change)="changeQuestion()" >
+        <label [for]="'answerChoice'+ i">{{answer.answer}}</label>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="upload_data_wrapper" *ngIf="showUpload">
+      <button class="btn">Загрузить файл</button>
+    </div>
+  </div>
+</div>

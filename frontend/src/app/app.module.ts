@@ -7,6 +7,7 @@ import { InformPageComponent } from './inform-page/inform-page.component';
 import { InteractiveHelperComponent } from './interactive-helper/interactive-helper.component';
 import { ManualUploadComponent } from './manual-upload/manual-upload.component';
 import { ChooseCritetiumComponent } from './choose-critetium/choose-critetium.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ChooseCritetiumComponent } from './choose-critetium/choose-critetium.co
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
