@@ -7,6 +7,7 @@ import os
 from src.utils.helper import  Helper
 from src.utils.read_write_utils import read_data_excel, read_data_csv
 from werkzeug.utils import secure_filename
+from src.assets.questions import questions
 
 app = Flask(__name__)
 CORS(app)
@@ -33,6 +34,9 @@ def uploaded_file():
     if __name__ == '__main__':
         app.run(port='5000', host='0.0.0.0')
 
+@app.route('/get_questions', methods=['GET'])
+def get_questions():
+    return jsonify(questions)
 
 if __name__ == '__main__':
     app.run()
