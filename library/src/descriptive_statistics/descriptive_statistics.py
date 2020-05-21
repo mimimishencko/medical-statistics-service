@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from src.assets.summary_dict import *
 import pylab
 import uuid
+import os
 from src.report_generator.generate_pdf import ReportGen
 from src.normal_dist_test.normal_dist_test import NormalDistTests
 from src.critical_tables import student_table, chi_square_table
@@ -170,7 +171,8 @@ class DescriptiveStatistics:
         self.graphic.histogram()
         self.graphic.qq_plot()
         self.graphic.box_plot()
-        self.report_gen.for_descriptive(self.statistics_df, result, self.unique_filename, dist_res, confidence_mean, confidence_variance)
+        filename = self.report_gen.for_descriptive(self.statistics_df, result, self.unique_filename, dist_res, confidence_mean, confidence_variance)
+        return filename
 
 
 class GraphicStatistics:
@@ -178,18 +180,21 @@ class GraphicStatistics:
     def __init__(self, data, unique_filename):
         self.data = data
         self.unique_filename = unique_filename
+        self.assets = os.path.join(os.path.dirname(__file__),'..','report_generator/plots')
 
     def histogram(self):
-        sns_plot = sns.distplot(self.data, norm_hist=True)
-        sns_plot.figure.savefig(f"assets/histogram-{self.unique_filename}.jpg", format='jpg')
-        plt.show()
+        sns_plot = sns.distplot(np.array(self.data), norm_hist=True)
+        print(os.path.join(self.assets, f"histogram-{self.unique_filename}.jpg"))
+        sns_plot.figure.savefig(os.path.join(self.assets, f"histogram-{self.unique_filename}.jpg"), format='jpg')
+        sns_plot.figure.clear()
 
     def qq_plot(self):
-        stats.probplot(self.data, dist="norm", plot=pylab)
-        plt.savefig(f"assets/qq-plot-{self.unique_filename}.jpg", format='jpg')
-        plt.show()
+        stats.probplot(np.array(self.data), dist="norm", plot=pylab)
+        plt.savefig(os.path.join(self.assets, f"qq-plot-{self.unique_filename}.jpg"), format='jpg')
+        plt.figure().clear()
 
     def box_plot(self):
         plt.boxplot(self.data)
-        plt.savefig(f"assets/box-plot-{self.unique_filename}.jpg", format='jpg')
-        plt.show()
+        plt.savefig(os.path.join(self.assets, f"box-plot-{self.unique_filename}.jpg"), format='jpg')
+        plt.figure().clear()
+

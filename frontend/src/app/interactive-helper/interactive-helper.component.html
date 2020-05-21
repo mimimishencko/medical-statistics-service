@@ -8,14 +8,23 @@
       <div class="answers">
         <div *ngFor="let answer of currentQuestion.answers; let i = index">
         <input type="radio" [id]="'answerChoice'+ i"
-               name="answerRadio" [value]="answer.answer" (change)="changeQuestion()" >
+               name="answerRadio" [value]="answer.answer" (change)="changeQuestion(answer.id)" >
         <label [for]="'answerChoice'+ i">{{answer.answer}}</label>
+          <div class="answer_description" *ngIf="currentQuestion.description">
+            {{currentQuestion.description[answer.id-1]}}
+          </div>
         </div>
       </div>
       </div>
     </div>
     <div class="upload_data_wrapper" *ngIf="showUpload">
-      <button class="btn">Загрузить файл</button>
+      <form [formGroup]="form">
+        <label class="btn" for="input-file" >
+          Загрузить файл
+        </label>
+        <input type="file" id="input-file" style="display: none" (change)="onPictureSelected($event)">
+      </form>
+      <button class="btn secondary">Ввести вручную</button>
     </div>
   </div>
 </div>

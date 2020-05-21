@@ -20,7 +20,10 @@ class NonParametricMethods:
         self.report_generator = ReportGen()
 
 
-    def wilcoxon(self, first_sample, second_sample):
+    def wilcoxon(self, data):
+        first_sample = data[0].to_numpy().transpose()
+        second_sample = data[1].to_numpy().transpose()
+
         df = pd.DataFrame({'before': first_sample, 'after': second_sample,
                            'difference': first_sample - second_sample,
                            'abs_diff': abs(first_sample - second_sample)})
@@ -40,7 +43,8 @@ class NonParametricMethods:
 
         n = np.size(first_sample)
         critical, alpha = wilcoxon_table.get_value(n)
-        self.report_generator.for_wilcoxon(df, n, W_obs, critical, alpha)
+        filename = self.report_generator.for_wilcoxon(df, n, W_obs, critical, alpha)
+        return filename
 
     def mann_whitney(self, data, alpha, expected):
         first_sample = data[0].to_numpy().transpose()
@@ -73,8 +77,9 @@ class NonParametricMethods:
         if expected == 0 and stat <= critical:
             print('3')
             accepted = True
-        self.report_generator.for_mann_whitney(format(stat, '.4f'), format(critical, '.4f'), n, m, format(p_value, '.6f'), alpha, expected, accepted)
-
+        data_for_table = pd.DataFrame(data.to_numpy(), index = range(1, np.size(first_sample)+1),columns=(1, 2))
+        filename = self.report_generator.for_mann_whitney(format(stat, '.4f'), format(critical, '.4f'), n, m, format(p_value, '.6f'), alpha, expected, accepted, data_for_table.head(20))
+        return filename
 
 
     def chi2(self):
@@ -121,5 +126,18 @@ class NonParametricMethods:
             degree_of_freedom = k - 1
             critical1 = chi_square_table.get_value(p1, degree_of_freedom)
             stat, p_value = stats.friedmanchisquare(*(args[i] for i in range(len(args))))
-        self.report_generator.for_friedman(chi, critical1, p1,  df, df_ranges, n, k, format(p_value, '.4f'), alpha)
+        filename = self.report_generator.for_friedman(chi, critical1, p1,  df, df_ranges, n, k, format(p_value, '.4f'), alpha)
+        return filename
 
+    def test(self, data, expected, is_independent, sample_count, sample_size_equal, alpha, continues):
+        filename = ''
+        if sample_count == 2:
+            if continues:
+                if is_independent:
+                    filename = self.mann_whitney(data, alpha, expected)
+                else:
+                    filename = self.wilcoxon(data)
+            else:
+                if is_independent:
+                    self.chi2()
+        return filename

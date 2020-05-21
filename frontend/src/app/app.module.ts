@@ -8,6 +8,7 @@ import { InteractiveHelperComponent } from './interactive-helper/interactive-hel
 import { ManualUploadComponent } from './manual-upload/manual-upload.component';
 import { ChooseCritetiumComponent } from './choose-critetium/choose-critetium.component';
 import {HttpClientModule} from '@angular/common/http';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {HttpClientModule} from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
